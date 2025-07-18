@@ -1,0 +1,9 @@
+- name: playbook-ping
+  hosts: all
+  tasks:
+    - name: ping all
+      ping:
+    - name: Copy files
+      shell: sshpass -p {{ansible_password}} scp -o StrictHostKeyChecking=no -P {{ansible_port}}  /Users/saketb/Documents/Dev/DevOps/saket.txt {{ansible_user}}@{{ansible_host}}:/home/ansible
+      delegate_to: localhost
+      

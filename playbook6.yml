@@ -1,0 +1,50 @@
+- name: Create multiple users
+  hosts: all
+  become: true
+  vars:
+    users:
+      - name: saket
+      - name: devuser
+      - name: admin
+  tasks:
+    - name: Creating User accounts
+      ansible.builtin.user:
+        name: '{{ item.name }}'
+        shell: /bin/bash
+      loop: '{{ users }}'
+    - name: Installing nginx if Ubuntu
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+      when: ansible_facts['distribution'] == "Ubuntu"
+- name: Copy config file
+  hosts: all
+  become: true
+  tasks:
+    - name: Copying file
+      ansible.builtin.copy:
+        src: '/Users/saketb/Documents/Dev/DevOps/Testing.txt'
+        dest: '/work'
+        mode: '0644'
+      when: inventory_hostname == 'host2'
+    - name: Get stats of a file
+      ansible.builtin.stat:
+        path: /work/demo.txt
+      register: details
+    - name: Creating file if not there
+      ansible.builtin.copy:
+        src: '/Users/saketb/Documents/Dev/DevOps/Testing'
+        dest: '/work/demo.txt'
+        mode: '0644'
+      when: not details.stat.exists
+- name: Play 3
+  hosts: all
+  tasks:
+    - name: Ping
+      ansible.builtin.ping:
+      register: pingdetails
+      when: inventory_hostname == 'host2'
+    - name: Print result
+      ansible.builtin.debug:
+        var: pingdetails
+      when: inventory_hostname == 'host2'

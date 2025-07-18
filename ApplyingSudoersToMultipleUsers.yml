@@ -1,0 +1,25 @@
+- name: CreatingUserwithPasswordlessSudo
+  hosts: all
+  become: true
+  vars:
+    sudo_users:
+      - alice
+      - bob
+      - carl
+  tasks:
+    - name: Create User deploy
+      ansible.builtin.user:
+        name: "{{  item  }}"
+        groups: wheel
+        append: true
+        shell: /bin/bash
+      loop: "{{   sudo_users  }}"
+
+    - name: Create passwordless sudo for user deploy
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ item }}"
+        content: '{{  item  }} ALL=(ALL) NOPASSWD:ALL'
+        owner: root
+        group: root
+        mode: "0440"
+      loop: "{{ sudo_users  }}"

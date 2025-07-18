@@ -1,0 +1,12 @@
+- name: playbook3
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: User creation
+      user:
+        name: DevOps
+        uid: 1500
+        state: present
+        shell: /bin/bash
+

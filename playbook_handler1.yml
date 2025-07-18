@@ -1,0 +1,15 @@
+---
+- name: playbook_handler
+  hosts: all
+  tasks:
+    - name: Copy testing.txt
+      ansible.builtin.copy:
+        src: '/Users/saketb/Documents/Dev/DevOps/testing.txt'
+        dest: '/home/ansible/testing.txt'
+      notify: create a new file
+
+  handlers:
+    - name: create a new file
+      ansible.builtin.copy:
+        src: '/Users/saketb/Documents/Dev/DevOps/handler.txt'
+        dest: '/home/ansible/handler.txt'

@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for test_role_1
+var1: test_role_user1
+var2: var2var

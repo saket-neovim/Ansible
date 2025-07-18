@@ -1,0 +1,15 @@
+- name: Show host variables
+  hosts: web
+  gather_facts: false
+  tasks:
+    - name: Show ansible_host
+      debug:
+        var: ansible_host
+
+    - name: Show ansible_user
+      debug:
+        var: ansible_user
+
+    - name: Show all host variables
+      debug:
+        var: hostvars[inventory_hostname]

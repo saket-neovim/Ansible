@@ -1,0 +1,13 @@
+- name: Playbook HelloWorld 
+  hosts: all
+  tasks:
+    - name: Print Hello World
+      shell: echo "Hello, World!"
+    - name: Print Hello Username to a file in the working directory
+      shell: echo "Hello $(whoami)" > /work/saket.txt
+    - name: debug test
+      #vars: 
+      #  ansible_port: 6969
+      debug: 
+       #msg: "Hi Saket"
+       var: ansible_port

@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for my_role
+src_dir: '/Users/saketb/Documents/Dev/DevOps/testing.txt'
+dest_dir: '/home/ansible/testing.txt'
+src_dir2: '/Users/saketb/Documents/Dev/DevOps/handler.txt'
+dest_dir2: '/home/ansible/handler2.txt'
+ 

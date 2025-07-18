@@ -1,0 +1,11 @@
+- name: editing sudoers file using j2
+  hosts: all
+  become: true
+  tasks:
+    - name: Placing the file using the template module
+      ansible.builtin.template:
+        src: '/Users/saketb/Documents/Dev/DevOps/deploy_sudoers.j2'
+        dest: '/etc/sudoers.d/{{  username  }}'
+        owner: root
+        group: root
+        mode: '0440'

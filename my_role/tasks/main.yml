@@ -1,0 +1,7 @@
+---
+- name: Copy testing.txt
+  ansible.builtin.copy:
+    src: '{{  src_dir }}'
+    dest: '{{ dest_dir }}'
+  notify: create a new file
+
