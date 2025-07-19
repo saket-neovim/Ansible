@@ -1,0 +1,40 @@
+#Create a new user devuser and copy your local SSH public key to their ~/.ssh/authorized_keys file.
+- name: Playbook for ssh access
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    pub:
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJlhgoCnW9dqCFsXhO3E98Ck6GrqUo3f8Z85ZtOciJed saket.98b@gmail.com
+    user:
+      devuser
+  tasks:
+    - name: creating {{ user }}
+      ansible.builtin.user:
+        name: "{{ user }}"
+        create_home: yes
+        shell: /bin/bash
+    - name: creating ssh dir
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.ssh/"
+        state: directory
+        owner: "{{ user }}"
+        mode: "0700"
+    - name: creating authorized_keys file
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.ssh/authorized_keys"
+        state: touch
+        owner: "{{ user }}"
+        mode: "0600"
+    - name: writing the pub key
+      ansible.builtin.lineinfile:
+        path: "/home/{{ user }}/.ssh/authorized_keys"
+        line: "{{ pub }}"
+        insertafter: EOF
+        state: present
+    - name: granting passwordless sudo to {{ user }}
+      ansible.builtin.lineinfile:
+        path: "/etc/sudoers.d/{{ user }}"
+        line: "{{ user }} ALL=(ALL) NOPASSWD:ALL"
+        state: present
+        create: true
