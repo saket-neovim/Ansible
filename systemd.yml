@@ -1,0 +1,45 @@
+- name: testing out systemd module
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+
+    - name: Collect installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: start the nginx service
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+      when: "'nginx' in ansible_facts.packages"
+
+    - name: Fail if nginx is not running
+      ansible.builtin.fail:
+        msg: "Nginx is not running!"
+      when: "'nginx.service' in services and services['nginx.service'].state != 'running'"
+
+    - name: stop crond
+      ansible.builtin.systemd_service:
+        name: crond
+        state: stopped
+    - name: sshd is running and enabled
+      ansible.builtin.systemd_service:
+        name: sshd
+        state: started
+        enabled: true
+    - name: disable and stop firewalld
+      ansible.builtin.systemd_service:
+        name: firewalld
+        state: stopped
+        enabled: false
+    - name: restart docker service
+      ansible.builtin.systemd_service:
+        name: docker
+        state: restarted
+
+    - name: Show installed packages
+      debug:
+        var: ansible_facts.packages

@@ -1,0 +1,57 @@
+- name: Testing out package module
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    package_list:
+      - vim
+  tasks:
+    - name: Install EPEL release (manual rpm install)
+      ansible.builtin.yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+        disable_gpg_check: true
+        state: present
+
+    - name: Add official NGINX repo
+      ansible.builtin.copy:
+        dest: /etc/yum.repos.d/nginx.repo
+        content: |
+          [nginx-stable]
+          name=nginx stable repo
+          baseurl=https://nginx.org/packages/rhel/{{ ansible_facts['distribution_major_version'] }}/$basearch/
+          gpgcheck=1
+          enabled=1
+          gpgkey=https://nginx.org/keys/nginx_signing.key
+
+    - name: Installing latest version of nginx
+      ansible.builtin.package:
+        update_cache: true
+        name: nginx
+        state: latest
+
+    - name: installing curl
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Removing httpd
+      ansible.builtin.package:
+        name: httpd
+        state: absent
+
+    - name: Installing multiple packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ package_list }}"
+
+    - name: Update all packages
+      ansible.builtin.package:
+        name: "*"
+        state: latest
+
+    - name: Installing "{{ var_package }}"
+      ansible.builtin.package:
+        name: "{{ var_package }}"
+        state: present
+      when: var_package is defined
