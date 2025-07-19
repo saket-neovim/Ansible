@@ -35,11 +35,6 @@
         name: firewalld
         state: stopped
         enabled: false
-    - name: restart docker service
-      ansible.builtin.systemd_service:
-        name: docker
-        state: restarted
-
     - name: Show installed packages
       debug:
         var: ansible_facts.packages
