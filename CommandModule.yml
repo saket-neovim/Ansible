@@ -1,0 +1,61 @@
+- name: testing ansible command module
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: run uptime and register the output
+      ansible.builtin.command: uptime
+      register: theUptime
+
+    - name: Execute df -h and store result
+      ansible.builtin.command: df -h
+      register: filesystem
+
+    - name: debug the previous task
+      ansible.builtin.debug:
+        var: filesystem
+
+    - name: Run ls -l /etc/ and save the output
+      ansible.builtin.command: ls -l /etc/
+      register: ls
+
+#    - name: Testing redirection
+#      ansible.builtin.command: ls > /tmp/test.txt
+
+    - name: Create a task that fails if hostname does not match a pattern
+      ansible.builtin.command: hostname
+      register: hostname_output
+
+    - name: Fail if hostname does not match a pattern
+      ansible.builtin.debug:
+        msg: "Hostname is valid: {{ hostname_output.stdout }}"
+      failed_when: hostname_output.stdout is not match("^rhel.*$")
+
+#    - name: Chain two commands using &&
+#      ansible.builtin.command: mkdir test && cd test
+
+    - name: Use creates to prevent rerunning a command.
+      ansible.builtin.command: echo "Hello, Saket!" > test.txt
+      args:
+        creates: test.txt
+
+    - name: Capture output of whoami and debug it
+      ansible.builtin.command: whoami
+      register: whoami_output
+
+    - name: printing the previous task using debug
+      ansible.builtin.debug:
+        var: whoami_output.stdout
+
+    - name: Use removes to conditionally execute a command
+      ansible.builtin.command: rm -rf test.txt
+      args:
+        removes: test.txt
+
+    - name: Run a non-shell binary
+      ansible.builtin.command: /usr/bin/uptime
+      register: uptime_result
+
+    - name: show the uptime output
+      ansible.builtin.debug:
+        var: uptime_result.stdout
