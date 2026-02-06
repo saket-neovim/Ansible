@@ -1,0 +1,11 @@
+- name: gather ip from facts
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: gathering Ip from all hosts
+      debug:
+        msg: >
+          The Ip Address is {{ ansible_default_ipv6.address }}
+    - name: preffered way to ue facts
+      debug:
+        msg:  The IP address is {{ ansible_default_ipv6['address']}}

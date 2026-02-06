@@ -1,0 +1,14 @@
+---
+- name: lab5 repeat
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: including user file
+      include_vars: username2
+    - name: including password file
+      include_vars: password2
+    - name: setting up user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ password | password_hash('sha512')}}"
+          

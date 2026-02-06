@@ -1,0 +1,10 @@
+.git
+**/.DS_Store
+**/*.log
+**/*.key
+**/*.pem
+**/*.crt
+**/*.csr
+**/*secret*
+**/*.vault
+vault_pass.txt

@@ -1,0 +1,32 @@
+---
+- name: lab14 repeat
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - block:
+       - name: checking for 2nd disk
+         debug:
+           msg: "DVD is present"
+         when: "'sr0' in ansible_facts.devices"
+       - name: if 2nd disk does not exist
+         debug:
+           msg: "DVD is not present"
+         when: "'sr0' not in ansible_facts.devices"
+       - name: configure the disk with one partition
+         parted:
+           device: /dev/sdb
+           state: present
+       - name: creating an vol group
+         lvg:
+           vg: vgfiles
+           pvs: /dev/sdb
+           state: present
+       - name: creating facts for vol group
+         
+         
+      rescue:
+        - name: rescue task
+          debug:
+            msg: "task failed"
+      

@@ -1,0 +1,13 @@
+- name: lab7
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    block:
+    - debug:
+      msg: "You have a second disk"
+    when: ansible_facts['devices'] | count > 1
+    rescue:
+    - debug:
+      msg: "You dont have a second disk"
+      

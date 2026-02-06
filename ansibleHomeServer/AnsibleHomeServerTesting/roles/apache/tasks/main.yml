@@ -1,0 +1,25 @@
+---
+- name: installing httpd
+  yum:
+    name: httpd
+    state: present
+- name: enabling httpd
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+- name: enabling firewall
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+- name: coinfiguring firewalld
+  firewalld:
+    service: http
+    state: enabled
+    immediate: yes
+- name: template_task
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+

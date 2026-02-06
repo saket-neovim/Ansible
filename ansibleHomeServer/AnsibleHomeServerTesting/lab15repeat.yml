@@ -1,0 +1,14 @@
+---
+- name: lab15 repeat
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: getting facts
+      debug:
+        var: ansible_facts['interfaces']
+    - name: storing said fact
+      set_fact:
+        interface2 : "{{ ansible_facts['interfaces'] | difference(['lo'])}}"
+    - name: printing the said fact
+      debug:
+        var: interface2

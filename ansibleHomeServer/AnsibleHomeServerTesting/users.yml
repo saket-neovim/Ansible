@@ -1,0 +1,8 @@
+---
+- name: question15
+  hosts: 
+    - dev
+    - test
+  become: true
+  gather_facts: false
+    

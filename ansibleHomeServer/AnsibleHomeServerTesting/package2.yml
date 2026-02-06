@@ -1,0 +1,30 @@
+- name: package2
+  hosts: serverB
+  become: true
+  tasks:
+    - name: install httpd & firewalld package
+      ansible.builtin.dnf:
+        name: 
+        - httpd
+        - firewalld
+        state: latest
+    - name: index
+      copy:
+        dest: /var/www/html/index.html
+        content: hello world in lab4
+    - name: starting httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: starting firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+    - name: open ports in firewall
+      firewalld:
+        service: https
+        permanent: true
+        state: enabled
+        immediate: true

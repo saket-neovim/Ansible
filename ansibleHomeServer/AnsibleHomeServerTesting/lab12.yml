@@ -1,0 +1,19 @@
+---
+- name: lab 12
+  hosts: serverA
+  become: True
+  vars:
+    username:
+      - saket
+      - savan
+  vars_prompt:
+    - name: password
+      prompt: "Enter your password"
+      private: yes
+  tasks:
+    - name: Creating a user 
+      no_log: true
+      user:
+        name: "{{ item }}"
+        password: "{{ password | password_hash('sha512')}}"
+      loop: "{{ username }}"

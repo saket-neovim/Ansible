@@ -1,0 +1,10 @@
+---
+- name: question17
+  hosts: dev
+  tasks:
+    - name: cron task
+      cron:
+        name: cronjob1
+        user: devops
+        minute: "*/2"
+        job: "logger 'EX200 in progress'" 

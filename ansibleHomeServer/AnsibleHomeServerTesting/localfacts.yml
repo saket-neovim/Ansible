@@ -1,0 +1,17 @@
+- name: local facts
+  hosts: serverA
+  become: true
+  tasks:
+  - name: ensure local facts directory exists
+    file:
+      path: /etc/ansible/facts.d
+      state: directory
+      mode: '0755'
+  - name:
+    copy:
+      src: env.fact
+      dest: /etc/ansible/facts.d/env.fact
+    become: true    
+    
+    
+    

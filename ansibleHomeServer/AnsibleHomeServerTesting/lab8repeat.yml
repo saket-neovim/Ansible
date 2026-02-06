@@ -1,0 +1,11 @@
+---
+- name: lab8 repeat
+  hosts: all
+  become: true
+  tasks:
+    - name: editing hostname 
+      copy:
+        dest: /etc/hosts
+        content: |
+          {{ host_ip }} {{ hostname }}
+

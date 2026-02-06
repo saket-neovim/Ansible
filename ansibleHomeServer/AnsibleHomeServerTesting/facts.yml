@@ -1,0 +1,6 @@
+- name: fact gathering
+  hosts: serverB
+  tasks:
+    - name: Fact gathering for serverB
+      debug:
+        var: ansible_facts

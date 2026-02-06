@@ -1,0 +1,4 @@
+---
+balancer: 192.0.2.10
+webserver01: 192.0.2.11
+webserver02: 192.0.2.12

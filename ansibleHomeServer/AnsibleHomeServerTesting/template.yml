@@ -1,0 +1,14 @@
+---
+- name: Deploy /etc/hosts
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Generate /etc/hosts from template
+      ansible.builtin.template:
+        src: hosts4.j2
+        dest: /home/devops/hosts4.txt
+        owner: root
+        group: root
+        mode: '0644'
+

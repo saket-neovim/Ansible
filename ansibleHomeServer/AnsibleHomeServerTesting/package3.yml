@@ -1,0 +1,35 @@
+---
+- name: install packages3
+  hosts: 
+    - dev 
+    - test 
+    - prod
+  gather_facts: no
+  become: yes
+  ignore_errors: yes
+  vars:
+    package_list:
+      - php
+      - mariadb
+  tasks:
+    - name: install php and mariadb
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ package_list }}"
+
+- name: install RPM dev tools
+  hosts: test
+  gather_facts: false
+  become: yes
+  ignore_errors: yes
+  tasks:
+    - name: install rpm dev tools
+      yum:
+        name: "@RPM Development Tools"
+        state: latest
+    - name: update to the latest
+      yum:
+        name: "*"
+        state: latest
+

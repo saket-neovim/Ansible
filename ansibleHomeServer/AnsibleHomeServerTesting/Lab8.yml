@@ -1,0 +1,13 @@
+---
+- name: Lab 8
+  hosts: all
+  become: true
+  tasks:
+  - name: Changing inventory host_name
+    hostname:
+      name: "{{ inventory_hostname }}"
+    notify: reboot_task
+  handlers:
+  - name: reboot_task
+    reboot:
+      msg: "rebooting machine in 5 seconds"

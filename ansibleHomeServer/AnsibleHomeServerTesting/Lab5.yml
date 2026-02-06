@@ -1,0 +1,13 @@
+- name: lab5
+  hosts: serverB
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars/username.yml
+    - vars/secret.yml
+  tasks:
+    - name: Create user {{ username }} with password
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ password | password_hash('sha512') }}"
+      no_log: true

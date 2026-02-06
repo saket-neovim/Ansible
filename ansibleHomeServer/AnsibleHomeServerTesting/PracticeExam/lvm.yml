@@ -1,0 +1,35 @@
+---
+- name: lvm question
+  gather_facts: true
+  hosts: serverC
+  become: true
+  tasks:
+    - block:
+        - name: create lv
+          community.general.lvol:
+            vg: research
+            lv: data
+            size: 1500m
+            state: present
+        - name: filesystem for the lv
+          community.general.filesystem:
+            fstype: ext4
+            dev: /dev/research/data
+      rescue:
+        - name: debug msg
+          debug:
+            msg: could not create lv of size 1500m
+        - name: create lv 800m
+          community.general.lvol:
+            vg: research
+            lv: data
+            size: 800m
+            state: present
+        - name: filesystem for the lv 800m
+          community.general.filesystem:
+            fstype: ext4
+            dev: /dev/research/data
+      when: ansible_lvm.vgs.research is defined
+    - debug:
+        msg: Volume group does not exist
+      when: ansible_lvm.vgs.research is not defined

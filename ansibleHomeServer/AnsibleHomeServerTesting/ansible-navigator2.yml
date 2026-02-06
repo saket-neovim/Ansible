@@ -1,0 +1,7 @@
+ansible-navigator:
+  execution-environment:
+    image: random_image
+    pull:
+      policy: missing
+  playbook-artifact:
+    enabled: false

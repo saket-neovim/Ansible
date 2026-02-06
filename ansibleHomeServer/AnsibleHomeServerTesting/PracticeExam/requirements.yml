@@ -1,0 +1,5 @@
+---
+collections:
+  - name: redhat-insights-1.0.7.tar.gz
+  - name: community-general-5.5.0.tar.gz
+  - name: redhat-rhel_system_roles-1.19.3.tar.gz

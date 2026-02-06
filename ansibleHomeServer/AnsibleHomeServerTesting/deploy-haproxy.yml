@@ -1,0 +1,6 @@
+---
+- name: question8
+  hosts: all
+  become: true
+  roles:
+    - balancer

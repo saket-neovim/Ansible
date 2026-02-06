@@ -1,0 +1,9 @@
+[dev]
+serverA ansible_host=serverA.lab.example.com
+
+[test]
+serverB ansible_host=serverB.lab.example.com
+
+[prod]
+serverC ansible_host=serverC.lab.example.com
+

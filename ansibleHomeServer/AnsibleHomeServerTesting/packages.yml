@@ -1,0 +1,26 @@
+- name: install packages
+  hosts: all
+  become: true
+  tasks:
+    - name: php and mariadb
+      ansible.builtin.yum:
+        name:
+          - php
+          - mariadb-server
+        state: latest
+- name: install RPM Development Tools
+  hosts: dev
+  become: true
+  tasks:
+    - name: RPM Development Tools
+      ansible.builtin.dnf:
+        name: "@RPM Development Tools"
+        state: present
+- name: update all pckgs
+  hosts: all  
+  become: true
+  tasks:
+    - name: updating
+      ansible.builtin.yum:
+        name: "*"
+        state: latest

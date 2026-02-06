@@ -1,0 +1,6 @@
+# /home/greg/ansible/requirements.yml
+- src: http://classroom/materials/haproxy.tar
+  name: balancer
+- src: http://classroom/materials/phpinfo.tar
+  name: phpinfo
+

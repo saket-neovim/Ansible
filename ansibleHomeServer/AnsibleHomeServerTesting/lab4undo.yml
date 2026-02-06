@@ -1,0 +1,23 @@
+---
+- name: lab4 deletion
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: stopping http
+      service:
+        name: httpd
+        state: stopped
+        enabled: false
+    - name: removing firewall
+      ansible.posix.firewalld:
+        service: http
+        state: disabled
+        permanent: false
+    - name: removing package httpd
+      dnf:
+        name: httpd
+        state: absent
+    - name: remove file index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent

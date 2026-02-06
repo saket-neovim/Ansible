@@ -1,0 +1,5 @@
+---
+- src: haproxy
+  name: balancer
+- src: phpinfo
+  name: phpinfo

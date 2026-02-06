@@ -1,0 +1,35 @@
+---
+- name: question 9
+  hosts: 
+    - serverB
+    - serverC
+  become: true
+  gather_facts: yes
+  tasks:
+    - block:
+        - name: 1500M
+          lvol:
+            vg: research
+            lv: data
+            size: 1500M
+        - name: creating filesystem
+          filesystem:
+            dev: /dev/research/data
+            fstype: ext4
+      rescue:
+        - name: could not create lvm
+          debug:
+            msg: Cloud not create logical volume of that size
+        - name: 800M
+          lvol:
+            vg: research
+            lv: data
+            size: 800M
+        - name: creating filesystem
+          filesystem:
+            dev: /dev/research/data
+            fstype: ext4
+      when: ansible_lvm.vgs.reaserch is defined
+    - debug:
+        msg: vg does not exist
+      when: ansible_lvm.vgs.research is not defined

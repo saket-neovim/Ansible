@@ -1,0 +1,9 @@
+---
+- name: lab10
+  hosts: serverB
+  tasks:
+  - name: to check if network interface exists
+    debug:
+      msg: "network interface exsits"
+    when: ansible_default_ipv6 is defined and ansible_default_ipv6.interface == 'ens18'
+

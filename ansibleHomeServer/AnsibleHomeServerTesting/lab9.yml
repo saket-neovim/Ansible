@@ -1,0 +1,5 @@
+---
+- name: Lab 9
+  hosts: all
+  roles:
+   - role: custom

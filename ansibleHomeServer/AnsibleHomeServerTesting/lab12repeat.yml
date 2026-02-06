@@ -1,0 +1,20 @@
+---
+- name: lab12 repeat
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: secret
+      prompt: "Enter password for all the users"
+      private: true
+  vars:
+    username:
+      - saket1
+      - saket2
+      - saket3
+  tasks:
+    - name:
+      user:
+        name: "{{ item }}"
+        password: "{{ secret | password_hash('sha512') }}"
+      loop: "{{ username }}"

@@ -1,0 +1,35 @@
+--- 
+- name: lv3
+  hosts:
+    - serverB
+  become: true
+  gather_facts: true
+  tasks:
+    - name: if 2nd disk is found
+      community.general.lvg:
+        state: active
+        vg: vgfiles
+        pvs: ['/dev/sdb']
+      when: ansible_devices['sdb'] is defined
+    - name: if no 2nd disk is present
+      debug:
+        msg: no work to do
+    - name: lvm creation
+      community.general.lvol:
+        lv: lvfiles
+        vg: vgfiles
+        size: 1G
+    - name: filesystem
+      community.general.filesystem:
+        dev: /dev/vgfiles/lvfiles
+        fstype: xfs
+    - name: creating file mount pount
+      file:
+        path: /lvfiles
+        state: directory
+    - name: mounting the filesystem
+      ansible.posix.mount:
+        path: /lvfiles
+        src: /dev/vgfiles/lvfiles
+        state: mounted
+        fstype: xfs

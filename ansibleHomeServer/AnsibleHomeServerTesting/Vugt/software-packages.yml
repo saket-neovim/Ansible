@@ -1,0 +1,29 @@
+---
+- name: installs software pacakges
+  hosts:
+    - test
+    - prod
+  become: true
+  gather_facts: false
+  tasks:
+    - name: install nmap
+      yum:
+        name: nmap
+        state: present
+    - name: install wireshark
+      yum:
+        name: wireshark
+        state: present
+- name: install package group Virtualization Host
+  hosts: prod
+  become: true
+  gather_facts: false
+  tasks:
+    - name: install package group virtualization host
+      yum:
+        name: "@Virtualization Host"
+        state: present
+    - name: updating all packages
+      yum:
+        name: "*"
+        state: latest

@@ -1,0 +1,20 @@
+---
+- name: http package is installed
+  yum:
+    name: httpd
+    state: present
+- name: http is enabled
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+- name: check if firewalld is installed
+  yum:
+    name: firewalld
+    state: present
+- name: firewall is enabled
+  firewalld:
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled

@@ -1,0 +1,14 @@
+---
+- name: lab 7 repeat
+  hosts: all
+  gather_facts: yes
+  become: true
+  tasks:
+    - name: checking if 2nd disk exists
+      debug:
+        msg: "2nd disk exists"
+      when: "'sr0' in ansible_facts['devices']"
+    - name: if 2nd disk does not exist
+      debug:
+        msg: "2nd disk does not exist"
+      when: "'sr0' not in ansible_facts['devices']"

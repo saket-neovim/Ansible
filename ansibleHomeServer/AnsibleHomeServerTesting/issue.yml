@@ -1,0 +1,11 @@
+---
+- name: question11
+  become: false
+  gather_facts: true
+  hosts: all
+  tasks:
+    - name: replace content on dev
+      copy:
+        dest: /home/devops/issue2.txt
+        content: Development
+      when: inventory_hostname in groups.dev

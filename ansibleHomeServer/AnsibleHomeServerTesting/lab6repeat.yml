@@ -1,0 +1,15 @@
+--- 
+- name: lab6 repeat
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure facts.d exists
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+    - name: creating custom fact file
+      copy:
+        dest: /etc/ansible/facts.d/custom.fact
+        content:  |
+          [general]
+          type=production88

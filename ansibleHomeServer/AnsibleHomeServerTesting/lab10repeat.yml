@@ -1,0 +1,9 @@
+---
+- name: lab10 repeat
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: check for network interface
+      debug:
+        var: ansible_facts['ens18']
+      when: "'ens18' in ansible_facts.interfaces"

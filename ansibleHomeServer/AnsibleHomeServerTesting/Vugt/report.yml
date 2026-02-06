@@ -1,0 +1,49 @@
+---
+- name: report
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: generates a file on the control
+      copy:
+        dest: /root/ansible/Vugt/hwtemplate.j2
+        content: |
+          NAME=
+          IPADDRESS=
+          DISKS=
+          SECOND_DISK_NAME=
+      delegate_to: localhost
+    - name: copying the template file
+      copy:
+        src: /root/ansible/Vugt/hwtemplate.j2
+        dest: /root/
+      delegate_to: localhost
+    - name: copying it to managed nodes
+      template:
+        src: /root/hwtemplate.j2
+        dest: /home/devops/hwtemplate.txt
+    - name: modifying hwtemplate.txt
+      lineinfile:
+        path: /home/devops/hwtemplate.txt
+        state: present
+        regex: "^NAME="
+        line: "{{ ansible_fqdn }}"
+    - name: modifying ipaddress
+      lineinfile:
+        path: /home/devops/hwtemplate.txt
+        state: present
+        regex: "^IPADDRESS="
+        line: "{{ ansible_default_ipv4.address }}"
+    - name: modifying disks
+      lineinfile:
+        path: /home/devops/hwtemplate.txt
+        state: present
+        regex: "^DISKS="
+        line: "{{ ansible_devices }}"
+    - name: modifying seconddisk
+      lineinfile:
+        path: /home/devops/hwtemplate.txt
+        state: present
+        regex: "^SECOND_DISK_NAME="
+        line: "{{ ansible_devices[1] }}"
+      when: ansible_devices[1] is defined

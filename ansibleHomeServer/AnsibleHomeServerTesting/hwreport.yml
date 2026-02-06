@@ -1,0 +1,26 @@
+---
+- name: question13
+  hosts: all
+  become: true
+  gather_facts: yes
+  tasks:
+    - name: creating a file
+      file:
+        path: /home/devops/hwreport.txt
+        state: touch
+    - name: adding hostname
+      lineinfile:
+        path: /home/devops/hwreport.txt
+        line: "Host= {{ inventory_hostname }}"
+    - name: adding memort
+      lineinfile:
+        path: /home/devops/hwreport.txt
+        line: "memory= {{ ansible_memtotal_mb }}"
+    - name: adding biosversions
+      lineinfile:
+        path: /home/devops/hwreport.txt
+        line: "bios_version= {{ ansible_bios_version }}"
+    - name: adding size of disk device sda
+      lineinfile:
+        path: /home/devops/hwreport.txt
+        line: "size sda= {{ ansible_devices.sda.size }}"

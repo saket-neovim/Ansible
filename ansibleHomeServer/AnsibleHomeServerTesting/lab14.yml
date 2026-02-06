@@ -1,0 +1,54 @@
+---
+- name: lab 14
+  hosts: all
+  become: true
+  tasks:
+  - block:
+    - name: install on hosts where 2nd hard disk is present
+      debug:
+        msg: 2nd hard disk is present
+    - name: check for sbd
+      fail:
+        msg: no 2nd disk found
+      when: "'sda' not in ansible_facts['devices']" 
+    - name: configuring the device with one partition including all available disk space
+      parted:
+        device: /dev/sdb
+        number: 1
+        state: present
+        fs_type: ext4
+    - name: Create volume group
+      community.general.lvg:
+        vg: vgfiles
+        state: active
+        pvs: /dev/sdb1 
+    - name: check VG size
+      debug:
+        var: ansible_facts['lvm']
+      register: lvm_facts
+    - name: creating logical
+      community.general.lvol:
+        lv: lvfiles
+        active: true
+        size: 5G
+      when: lvm_facts > 5G
+    - name: creating logical 2
+      community.general.lvol:
+        lv: lvfiles
+        active: true
+        size: 3G
+      when: lvm_facts <= 5G
+    - name: Format filesystem
+      community.general.filesystem:
+        dev: /dev/sdb1
+        fstype: xfs
+    - name: mounting
+      community.general.mount:
+        path: /files
+        state: mounted
+        
+    when: "'sda' in ansible_facts.devices"
+    rescue:
+      - name: if no 2nd disk is present
+        debug:
+          msg: no 2nd disk is  present

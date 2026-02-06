@@ -1,0 +1,7 @@
+---
+- name: saketsplaybook
+  hosts: all
+  become: true
+  gather_facts: no
+  roles:
+    - role: saketstestrole

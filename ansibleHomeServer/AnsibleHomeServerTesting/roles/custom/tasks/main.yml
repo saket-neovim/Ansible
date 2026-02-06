@@ -1,0 +1,10 @@
+---
+- name: create file
+  file:
+    path: /etc/issue
+    state: file
+- name: adding text to file
+  lineinfile:
+    path: /etc/issue
+    line: "The system is {{ ansible_hostname }}"
+

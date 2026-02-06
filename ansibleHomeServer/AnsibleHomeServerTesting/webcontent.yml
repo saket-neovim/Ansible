@@ -1,0 +1,23 @@
+---
+- name: question12
+  hosts: dev
+  become: true
+  tasks:  
+    - name: creating webdev directory
+      file:
+        path: /webdev
+        state: directory
+        group: saket
+        mode: '2775'
+        
+    - name: creating symlink
+      file:
+        dest: /var/www/html/webdev
+        src: /webdev
+        state: link
+        force: yes
+    - name: creating a file
+      copy:
+        dest: /webdev/index.html
+        content: "Development"
+        settype: https_sys_content_t
