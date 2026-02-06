@@ -11,7 +11,7 @@
 
     - name: Place sudoers file using the template module
       ansible.builtin.template:
-        src: '/Users/saketb/Documents/Dev/DevOps/deploy_sudoers.j2'
+        src: '/Users/username/Documents/Dev/DevOps/deploy_sudoers.j2'
         dest: '/etc/sudoers.d/{{ username }}'
         owner: root
         group: root

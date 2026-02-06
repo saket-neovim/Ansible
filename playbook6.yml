@@ -28,7 +28,7 @@
   hosts: all
   become: true
   vars:
-    local_copy_src: "/Users/saketb/Documents/Dev/DevOps/Testing.txt"
+    local_copy_src: "/Users/username/Documents/Dev/DevOps/Testing.txt"
     remote_work_dir: "/work"
   tasks:
     - name: Ensure remote work directory exists

@@ -4,7 +4,7 @@
   become: true
   vars:
     file_owner: "{{ ansible_user | default('ansible') }}"
-    homesrc: "/Users/saketb/Documents/Dev/DevOps/Testing.txt"
+    homesrc: "/Users/username/Documents/Dev/DevOps/Testing.txt"
     destsrc: "/work/Testing.txt"
   tasks:
     - name: Ensure destination directory exists
@@ -25,7 +25,7 @@
 
     - name: Copy task 2 (directory)
       ansible.builtin.copy:
-        src: "/Users/saketb/Documents/Dev/DevOps/test_role_1"
+        src: "/Users/username/Documents/Dev/DevOps/test_role_1"
         dest: "/work/test_role_1"
         directory_mode: "0755"
         mode: preserve

@@ -14,14 +14,14 @@
     - name: Fetch backup
       ansible.builtin.fetch:
         src: /home/ansible/backup.tar.gz
-        dest: /Users/saketb/Documents/Dev/DevOps/
+        dest: /Users/username/Documents/Dev/DevOps/
         flat: true
       when: inventory_hostname == "target1"
       tags: [fetch]
 
     - name: Copy backup from local to remote
       ansible.builtin.copy:
-        src: /Users/saketb/Documents/Dev/DevOps/backup.tar.gz
+        src: /Users/username/Documents/Dev/DevOps/backup.tar.gz
         dest: /home/ansible/backup.tar.gz
         mode: "0644"
       when: inventory_hostname == "target2"
@@ -29,7 +29,7 @@
 
     - name: Cleanup local backup file
       ansible.builtin.file:
-        path: /Users/saketb/Documents/Dev/DevOps/backup.tar.gz
+        path: /Users/username/Documents/Dev/DevOps/backup.tar.gz
         state: absent
       delegate_to: localhost
       run_once: true

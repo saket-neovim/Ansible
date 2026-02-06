@@ -2,7 +2,7 @@
   hosts: all
   gather_facts: false
   vars:
-    local_src: "/Users/saketb/Documents/Dev/DevOps/saket.txt"
+    local_src: "/Users/username/Documents/Dev/DevOps/saket.txt"
     remote_dest_dir: "/home/ansible"
   tasks:
     - name: ping all

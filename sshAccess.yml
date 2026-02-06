@@ -4,7 +4,7 @@
   become: true
   gather_facts: false
   vars:
-    pub: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJlhgoCnW9dqCFsXhO3E98Ck6GrqUo3f8Z85ZtOciJed saket.98b@gmail.com"
+    pub: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEXAMPLEKEYREDACTED user@example.com"
     user: devuser
   tasks:
     - name: Create user {{ user }}

@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     hosts_file: "/etc/hosts"
-    local_download_root: "/Users/saketb/Downloads"
+    local_download_root: "/Users/username/Downloads"
     dest_path: "{{ local_download_root }}/{{ inventory_hostname }}/"
   tasks:
     - name: Fetch hosts file (default directory layout)

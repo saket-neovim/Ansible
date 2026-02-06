@@ -1,4 +1,6 @@
 k8s/
 RHEL/
 Podman/
-
+DockerBuilds/
+.idea/
+.ansible/
