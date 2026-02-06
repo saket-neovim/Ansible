@@ -1,0 +1,47 @@
+- name: Testing the file module
+  hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    files_list:
+      - file_abc.txt
+      - file_xyz.txt
+      - file_lm.txt
+    file_owner: "{{ ansible_user | default('ansible') }}"
+  tasks:
+    - name: Create a directory scripts with 0755 permissions
+      ansible.builtin.file:
+        path: "/work/scripts"
+        owner: "{{ file_owner }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create a file and change permissions
+      ansible.builtin.file:
+        path: "/work/scripts/test_script.sh"
+        state: touch
+        mode: "0755"
+
+    - name: Check file contents using the stat module
+      ansible.builtin.stat:
+        path: "/tmp/oldfile.log"
+      register: oldfile
+
+    - name: Delete file /tmp/oldfile.log
+      ansible.builtin.file:
+        path: "/tmp/oldfile.log"
+        state: absent
+      when: oldfile.stat.exists
+
+    - name: Loop through a variable and create a list of files
+      ansible.builtin.file:
+        path: "/work/scripts/{{ item }}"
+        owner: "{{ file_owner }}"
+        mode: "0600"
+        state: touch
+      loop: "{{ files_list }}"
+
+    - name: Show files created
+      ansible.builtin.debug:
+        msg: "Created file: /work/scripts/{{ item }}"
+      loop: "{{ files_list }}"

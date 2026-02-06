@@ -1,0 +1,60 @@
+- name: File Management module testing
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    file_owner: "{{ ansible_user | default('ansible') }}"
+    homesrc: "/Users/saketb/Documents/Dev/DevOps/Testing.txt"
+    destsrc: "/work/Testing.txt"
+  tasks:
+    - name: Ensure destination directory exists
+      ansible.builtin.file:
+        path: "/work"
+        state: directory
+        mode: "0755"
+
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+
+    - name: Copy local to remote
+      ansible.builtin.copy:
+        src: "{{ homesrc }}"
+        dest: "{{ destsrc }}"
+        owner: "{{ file_owner }}"
+        mode: "0644"
+
+    - name: Copy task 2 (directory)
+      ansible.builtin.copy:
+        src: "/Users/saketb/Documents/Dev/DevOps/test_role_1"
+        dest: "/work/test_role_1"
+        directory_mode: "0755"
+        mode: preserve
+
+    - name: Check local file checksum
+      ansible.builtin.stat:
+        path: "{{ homesrc }}"
+        checksum_algorithm: sha256
+      delegate_to: localhost
+      become: false
+      register: local_checksum
+
+    - name: Check remote file checksum
+      ansible.builtin.stat:
+        path: "{{ destsrc }}"
+        checksum_algorithm: sha256
+      register: remote_checksum_output
+      failed_when: false
+
+    - name: Copy only when different or missing
+      ansible.builtin.copy:
+        src: "{{ homesrc }}"
+        dest: "{{ destsrc }}"
+      when: not remote_checksum_output.stat.exists or local_checksum.stat.checksum != remote_checksum_output.stat.checksum
+      notify: restart_service
+
+  handlers:
+    - name: restart_service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when: "'nginx.service' in ansible_facts.services"

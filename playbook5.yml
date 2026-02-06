@@ -1,6 +1,7 @@
 ---
 - name: Exercise 1 Install multiple packages
   hosts: all
+  become: true
   vars:
     packages:
       - nginx
@@ -8,7 +9,7 @@
       - curl
   tasks:
     - name: Install packages
-      ansible.builtin.apt:
-        name: '{{ item }}'
+      ansible.builtin.package:
+        name: "{{ packages }}"
         state: present
-      loop: '{{ packages }}'
+        update_cache: true

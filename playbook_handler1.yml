@@ -1,15 +1,18 @@
 ---
 - name: playbook_handler
   hosts: all
+  become: true
   tasks:
-    - name: Copy testing.txt
+    - name: Copy Testing.txt
       ansible.builtin.copy:
-        src: '/Users/saketb/Documents/Dev/DevOps/testing.txt'
-        dest: '/home/ansible/testing.txt'
+        src: "/Users/saketb/Documents/Dev/DevOps/Testing.txt"
+        dest: "/home/ansible/Testing.txt"
+        mode: "0644"
       notify: create a new file
 
   handlers:
     - name: create a new file
       ansible.builtin.copy:
-        src: '/Users/saketb/Documents/Dev/DevOps/handler.txt'
-        dest: '/home/ansible/handler.txt'
+        src: "/Users/saketb/Documents/Dev/DevOps/handler.txt"
+        dest: "/home/ansible/handler.txt"
+        mode: "0644"

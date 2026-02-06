@@ -1,7 +1,15 @@
 ---
+- name: Ensure required vars are set
+  ansible.builtin.assert:
+    that:
+      - src_dir is defined
+      - dest_dir is defined
+      - src_dir | length > 0
+      - dest_dir | length > 0
+    fail_msg: "src_dir and dest_dir must be set for my_role"
+
 - name: Copy testing.txt
   ansible.builtin.copy:
-    src: '{{  src_dir }}'
-    dest: '{{ dest_dir }}'
+    src: "{{ src_dir }}"
+    dest: "{{ dest_dir }}"
   notify: create a new file
-

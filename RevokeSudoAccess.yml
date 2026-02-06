@@ -2,12 +2,13 @@
   hosts: all
   become: true
   tasks:
-    - name: Deleting /etc/sudoers.d/deploy
+    - name: Delete /etc/sudoers.d/deploy
       ansible.builtin.file:
         path: /etc/sudoers.d/deploy
         state: absent
-    - name: Removing user deploy from group
+
+    - name: Remove deploy from supplemental groups
       ansible.builtin.user:
         name: deploy
-        groups: deploy
+        groups: ""
         append: false

@@ -1,50 +1,71 @@
-- name: Create multiple users
+- name: Create multiple users and install nginx
   hosts: all
   become: true
+  gather_facts: true
   vars:
     users:
       - name: saket
       - name: devuser
       - name: admin
+    nginx_pkg_map:
+      Debian: nginx
+      RedHat: nginx
   tasks:
-    - name: Creating User accounts
+    - name: Ensure user accounts exist
       ansible.builtin.user:
-        name: '{{ item.name }}'
+        name: "{{ item.name }}"
         shell: /bin/bash
-      loop: '{{ users }}'
-    - name: Installing nginx if Ubuntu
-      ansible.builtin.apt:
-        name: nginx
+        create_home: true
+      loop: "{{ users }}"
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: "{{ nginx_pkg_map.get(ansible_facts['os_family'], 'nginx') }}"
         state: present
-      when: ansible_facts['distribution'] == "Ubuntu"
-- name: Copy config file
+        update_cache: true
+
+- name: Copy config file and ensure demo file exists
   hosts: all
   become: true
+  vars:
+    local_copy_src: "/Users/saketb/Documents/Dev/DevOps/Testing.txt"
+    remote_work_dir: "/work"
   tasks:
-    - name: Copying file
+    - name: Ensure remote work directory exists
+      ansible.builtin.file:
+        path: "{{ remote_work_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copying file (host2 only)
       ansible.builtin.copy:
-        src: '/Users/saketb/Documents/Dev/DevOps/Testing.txt'
-        dest: '/work'
-        mode: '0644'
+        src: "{{ local_copy_src }}"
+        dest: "{{ remote_work_dir }}/Testing.txt"
+        mode: "0644"
       when: inventory_hostname == 'host2'
-    - name: Get stats of a file
+
+    - name: Get stats of demo file
       ansible.builtin.stat:
-        path: /work/demo.txt
+        path: "{{ remote_work_dir }}/demo.txt"
       register: details
-    - name: Creating file if not there
+
+    - name: Create demo file if not present
       ansible.builtin.copy:
-        src: '/Users/saketb/Documents/Dev/DevOps/Testing'
-        dest: '/work/demo.txt'
-        mode: '0644'
+        dest: "{{ remote_work_dir }}/demo.txt"
+        content: "Demo file created by Ansible\n"
+        mode: "0644"
       when: not details.stat.exists
+
 - name: Play 3
   hosts: all
+  gather_facts: false
   tasks:
-    - name: Ping
+    - name: Ping (host2 only)
       ansible.builtin.ping:
       register: pingdetails
       when: inventory_hostname == 'host2'
-    - name: Print result
+
+    - name: Print result (host2 only)
       ansible.builtin.debug:
         var: pingdetails
       when: inventory_hostname == 'host2'

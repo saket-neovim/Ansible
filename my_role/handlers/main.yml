@@ -1,5 +1,10 @@
 ---
 - name: create a new file
   ansible.builtin.copy:
-    src: '{{  src_dir2  }}'
-    dest: '{{ dest_dir2 }}'
+    src: "{{ src_dir2 }}"
+    dest: "{{ dest_dir2 }}"
+  when:
+    - src_dir2 is defined
+    - dest_dir2 is defined
+    - src_dir2 | length > 0
+    - dest_dir2 | length > 0

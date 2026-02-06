@@ -6,13 +6,14 @@
     package_list:
       - vim
   tasks:
-    - name: Install EPEL release (manual rpm install)
+    - name: Install EPEL release (RHEL only)
       ansible.builtin.yum:
         name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
         disable_gpg_check: true
         state: present
+      when: ansible_facts['os_family'] == 'RedHat'
 
-    - name: Add official NGINX repo
+    - name: Add official NGINX repo (RHEL only)
       ansible.builtin.copy:
         dest: /etc/yum.repos.d/nginx.repo
         content: |
@@ -22,35 +23,35 @@
           gpgcheck=1
           enabled=1
           gpgkey=https://nginx.org/keys/nginx_signing.key
+      when: ansible_facts['os_family'] == 'RedHat'
 
-    - name: Installing latest version of nginx
+    - name: Install latest version of nginx
       ansible.builtin.package:
         update_cache: true
         name: nginx
         state: latest
 
-    - name: installing curl
+    - name: Install curl
       ansible.builtin.package:
         name: curl
         state: present
 
-    - name: Removing httpd
+    - name: Remove httpd (if present)
       ansible.builtin.package:
         name: httpd
         state: absent
 
-    - name: Installing multiple packages
+    - name: Install multiple packages
       ansible.builtin.package:
-        name: "{{ item }}"
+        name: "{{ package_list }}"
         state: present
-      loop: "{{ package_list }}"
 
     - name: Update all packages
       ansible.builtin.package:
         name: "*"
         state: latest
 
-    - name: Installing "{{ var_package }}"
+    - name: Install "{{ var_package }}" if defined
       ansible.builtin.package:
         name: "{{ var_package }}"
         state: present

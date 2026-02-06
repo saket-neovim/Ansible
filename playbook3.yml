@@ -2,11 +2,14 @@
   hosts: all
   become: true
   gather_facts: false
+  vars:
+    user_name: devops
+    user_uid: 1500
   tasks:
-    - name: User creation
-      user:
-        name: DevOps
-        uid: 1500
+    - name: Ensure user exists
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+        uid: "{{ user_uid }}"
         state: present
+        create_home: true
         shell: /bin/bash
-

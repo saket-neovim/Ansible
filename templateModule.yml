@@ -1,0 +1,14 @@
+- name: Template module example
+  hosts: all
+  become: true
+  vars:
+    username: deploy
+  tasks:
+    - name: Place sudoers rule from template
+      ansible.builtin.template:
+        src: '/Users/saketb/Documents/Dev/DevOps/deploy_sudoers.j2'
+        dest: '/etc/sudoers.d/{{ username }}'
+        owner: root
+        group: root
+        mode: '0440'
+        validate: 'visudo -cf %s'

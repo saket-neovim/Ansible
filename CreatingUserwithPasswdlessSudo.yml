@@ -2,12 +2,13 @@
   hosts: all
   become: true
   tasks:
-    - name: Create User deploy
+    - name: Create user deploy
       ansible.builtin.user:
         name: deploy
         groups: wheel
         append: true
         shell: /bin/bash
+        create_home: true
 
     - name: Create passwordless sudo for user deploy
       ansible.builtin.copy:
@@ -16,3 +17,4 @@
         owner: root
         group: root
         mode: '0440'
+        validate: 'visudo -cf %s'

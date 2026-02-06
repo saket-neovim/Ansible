@@ -1,17 +1,18 @@
-- name: Dyanmically set hostnames
+- name: Dynamically set hostnames
   hosts: web
-  become: yes
-  vars: 
-    default_hostname: "Generic"
+  become: true
+  gather_facts: true
+  vars:
+    default_hostname: "generic"
   tasks:
-    - name: set hostnames with dynamic variable
+    - name: Set hostname using dynamic variable
       ansible.builtin.hostname:
-        name: "{{hostname | default(default_hostname)}}"
-    - name: update /etc/hosts with a new hostname
-      lineinfile:
+        name: "{{ hostname | default(default_hostname) }}"
+
+    - name: Update /etc/hosts with the new hostname
+      ansible.builtin.lineinfile:
         path: /etc/hosts
-        regex: '^127\.0\.1\.1'
-        line: "127.0.1.1 {{hostname | default(default_hostname)}}
-        "
+        regexp: '^127\.0\.1\.1'
+        line: "127.0.1.1 {{ hostname | default(default_hostname) }}"
         state: present
-      when: ansible_virtualization_type != "docker"
+      when: ansible_facts.virtualization_type != "docker"

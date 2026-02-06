@@ -7,19 +7,21 @@
       - bob
       - carl
   tasks:
-    - name: Create User deploy
+    - name: Create users
       ansible.builtin.user:
-        name: "{{  item  }}"
+        name: "{{ item }}"
         groups: wheel
         append: true
         shell: /bin/bash
-      loop: "{{   sudo_users  }}"
+        create_home: true
+      loop: "{{ sudo_users }}"
 
-    - name: Create passwordless sudo for user deploy
+    - name: Create passwordless sudo for users
       ansible.builtin.copy:
         dest: "/etc/sudoers.d/{{ item }}"
-        content: '{{  item  }} ALL=(ALL) NOPASSWD:ALL'
+        content: "{{ item }} ALL=(ALL) NOPASSWD:ALL"
         owner: root
         group: root
         mode: "0440"
-      loop: "{{ sudo_users  }}"
+        validate: 'visudo -cf %s'
+      loop: "{{ sudo_users }}"

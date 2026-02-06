@@ -2,10 +2,18 @@
   hosts: all
   become: true
   tasks:
-    - name: Placing the file using the template module
+    - name: Ensure username is provided
+      ansible.builtin.assert:
+        that:
+          - username is defined
+          - username | length > 0
+        fail_msg: "username variable is required"
+
+    - name: Place sudoers file using the template module
       ansible.builtin.template:
         src: '/Users/saketb/Documents/Dev/DevOps/deploy_sudoers.j2'
-        dest: '/etc/sudoers.d/{{  username  }}'
+        dest: '/etc/sudoers.d/{{ username }}'
         owner: root
         group: root
         mode: '0440'
+        validate: 'visudo -cf %s'

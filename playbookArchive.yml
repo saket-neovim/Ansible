@@ -1,26 +1,33 @@
 - name: Archive + backup
   hosts: all
-  tasks: 
-    - name: archive
+  become: true
+  collections:
+    - community.general
+  tasks:
+    - name: Archive home directory
       community.general.archive:
         path: /home/ansible
         dest: /home/ansible/backup.tar.gz
       when: inventory_hostname == "target1"
       tags: [archive]
-    - name: fetch (backup)
+
+    - name: Fetch backup
       ansible.builtin.fetch:
         src: /home/ansible/backup.tar.gz
         dest: /Users/saketb/Documents/Dev/DevOps/
-        flat: yes
+        flat: true
       when: inventory_hostname == "target1"
       tags: [fetch]
-    - name: copy from local to remote
+
+    - name: Copy backup from local to remote
       ansible.builtin.copy:
         src: /Users/saketb/Documents/Dev/DevOps/backup.tar.gz
-        dest: /home/ansible/
+        dest: /home/ansible/backup.tar.gz
+        mode: "0644"
       when: inventory_hostname == "target2"
       tags: [copy]
-    - name: cleanup
+
+    - name: Cleanup local backup file
       ansible.builtin.file:
         path: /Users/saketb/Documents/Dev/DevOps/backup.tar.gz
         state: absent

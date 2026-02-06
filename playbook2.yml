@@ -1,9 +1,28 @@
 - name: playbook-ping
   hosts: all
+  gather_facts: false
+  vars:
+    local_src: "/Users/saketb/Documents/Dev/DevOps/saket.txt"
+    remote_dest_dir: "/home/ansible"
   tasks:
     - name: ping all
-      ping:
-    - name: Copy files
-      shell: sshpass -p {{ansible_password}} scp -o StrictHostKeyChecking=no -P {{ansible_port}}  /Users/saketb/Documents/Dev/DevOps/saket.txt {{ansible_user}}@{{ansible_host}}:/home/ansible
+      ansible.builtin.ping:
+
+    - name: Check local source exists
+      ansible.builtin.stat:
+        path: "{{ local_src }}"
       delegate_to: localhost
-      
+      run_once: true
+      register: local_src_stat
+
+    - name: Fail if local source is missing
+      ansible.builtin.fail:
+        msg: "Missing local file: {{ local_src }}"
+      when: not local_src_stat.stat.exists
+      run_once: true
+
+    - name: Copy file to remote hosts
+      ansible.builtin.copy:
+        src: "{{ local_src }}"
+        dest: "{{ remote_dest_dir }}/{{ local_src | basename }}"
+        mode: "0644"

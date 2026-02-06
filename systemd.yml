@@ -10,31 +10,39 @@
       ansible.builtin.package_facts:
         manager: auto
 
-    - name: start the nginx service
+    - name: Start nginx if installed
       ansible.builtin.systemd_service:
         name: nginx
         state: started
       when: "'nginx' in ansible_facts.packages"
 
-    - name: Fail if nginx is not running
+    - name: Fail if nginx service is not running
       ansible.builtin.fail:
         msg: "Nginx is not running!"
-      when: "'nginx.service' in services and services['nginx.service'].state != 'running'"
+      when:
+        - "'nginx.service' in ansible_facts.services"
+        - ansible_facts.services['nginx.service'].state != 'running'
 
-    - name: stop crond
+    - name: Stop crond if present
       ansible.builtin.systemd_service:
         name: crond
         state: stopped
-    - name: sshd is running and enabled
+      when: "'crond.service' in ansible_facts.services"
+
+    - name: Ensure sshd is running and enabled
       ansible.builtin.systemd_service:
         name: sshd
         state: started
         enabled: true
-    - name: disable and stop firewalld
+      when: "'sshd.service' in ansible_facts.services"
+
+    - name: Disable and stop firewalld if present
       ansible.builtin.systemd_service:
         name: firewalld
         state: stopped
         enabled: false
+      when: "'firewalld.service' in ansible_facts.services"
+
     - name: Show installed packages
-      debug:
+      ansible.builtin.debug:
         var: ansible_facts.packages

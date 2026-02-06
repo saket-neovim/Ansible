@@ -1,13 +1,17 @@
-- name: Playbook HelloWorld 
+- name: Playbook HelloWorld
   hosts: all
+  gather_facts: true
   tasks:
     - name: Print Hello World
-      shell: echo "Hello, World!"
-    - name: Print Hello Username to a file in the working directory
-      shell: echo "Hello $(whoami)" > /work/saket.txt
-    - name: debug test
-      #vars: 
-      #  ansible_port: 6969
-      debug: 
-       #msg: "Hi Saket"
-       var: ansible_port
+      ansible.builtin.debug:
+        msg: "Hello, World!"
+
+    - name: Write hello to a file in the user's home directory
+      ansible.builtin.copy:
+        dest: "{{ ansible_env.HOME }}/test.txt"
+        content: "Hello {{ ansible_user | default('user') }}\n"
+        mode: "0644"
+
+    - name: Show current user
+      ansible.builtin.debug:
+        var: ansible_user

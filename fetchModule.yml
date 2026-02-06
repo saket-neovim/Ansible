@@ -1,0 +1,32 @@
+- name: Testing out the fetch module
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    hosts_file: "/etc/hosts"
+    local_download_root: "/Users/saketb/Downloads"
+    dest_path: "{{ local_download_root }}/{{ inventory_hostname }}/"
+  tasks:
+    - name: Fetch hosts file (default directory layout)
+      ansible.builtin.fetch:
+        src: "{{ hosts_file }}"
+        dest: "{{ local_download_root }}/"
+
+    - name: Fetch hosts file (flat)
+      ansible.builtin.fetch:
+        src: "{{ hosts_file }}"
+        dest: "{{ dest_path }}"
+        flat: true
+
+    - name: Find files under /etc modified within 1 day
+      ansible.builtin.find:
+        paths: "/etc"
+        age: 1d
+      register: matching_files
+
+    - name: Fetch matching files
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: "{{ dest_path }}"
+        flat: true
+      loop: "{{ matching_files.files }}"

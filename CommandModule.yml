@@ -3,59 +3,62 @@
   become: true
   gather_facts: false
   tasks:
-    - name: run uptime and register the output
+    - name: Run uptime and register the output
       ansible.builtin.command: uptime
       register: theUptime
+      changed_when: false
 
     - name: Execute df -h and store result
       ansible.builtin.command: df -h
       register: filesystem
+      changed_when: false
 
-    - name: debug the previous task
+    - name: Debug the previous task
       ansible.builtin.debug:
         var: filesystem
 
     - name: Run ls -l /etc/ and save the output
       ansible.builtin.command: ls -l /etc/
       register: ls
+      changed_when: false
 
-#    - name: Testing redirection
-#      ansible.builtin.command: ls > /tmp/test.txt
-
-    - name: Create a task that fails if hostname does not match a pattern
+    - name: Capture hostname
       ansible.builtin.command: hostname
       register: hostname_output
+      changed_when: false
 
-    - name: Fail if hostname does not match a pattern
-      ansible.builtin.debug:
-        msg: "Hostname is valid: {{ hostname_output.stdout }}"
-      failed_when: hostname_output.stdout is not match("^rhel.*$")
+    - name: Assert hostname matches expected pattern
+      ansible.builtin.assert:
+        that:
+          - hostname_output.stdout is match("^rhel.*$")
+        fail_msg: "Hostname does not match pattern: {{ hostname_output.stdout }}"
+        success_msg: "Hostname is valid: {{ hostname_output.stdout }}"
 
-#    - name: Chain two commands using &&
-#      ansible.builtin.command: mkdir test && cd test
-
-    - name: Use creates to prevent rerunning a command.
-      ansible.builtin.command: echo "Hello, Saket!" > test.txt
-      args:
-        creates: test.txt
+    - name: Create test file with content (idempotent)
+      ansible.builtin.copy:
+        dest: /root/test.txt
+        content: "Hello, Saket!\n"
+        mode: "0644"
 
     - name: Capture output of whoami and debug it
       ansible.builtin.command: whoami
       register: whoami_output
+      changed_when: false
 
-    - name: printing the previous task using debug
+    - name: Print the whoami output
       ansible.builtin.debug:
         var: whoami_output.stdout
 
-    - name: Use removes to conditionally execute a command
-      ansible.builtin.command: rm -rf test.txt
-      args:
-        removes: test.txt
+    - name: Remove test file if present
+      ansible.builtin.file:
+        path: /root/test.txt
+        state: absent
 
     - name: Run a non-shell binary
       ansible.builtin.command: /usr/bin/uptime
       register: uptime_result
+      changed_when: false
 
-    - name: show the uptime output
+    - name: Show the uptime output
       ansible.builtin.debug:
         var: uptime_result.stdout

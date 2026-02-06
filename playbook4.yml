@@ -1,20 +1,20 @@
 - name: Ensure Apache is installed and running on all nodes
   hosts: all
   become: true
+  gather_facts: true
+  vars:
+    apache_pkg_map:
+      Debian: apache2
+      RedHat: httpd
   tasks:
-    - name: Install Apache on Debian/Ubuntu
-      ansible.builtin.apt:
-        name: apache2
+    - name: Install Apache
+      ansible.builtin.package:
+        name: "{{ apache_pkg_map.get(ansible_facts['os_family'], 'apache2') }}"
         state: present
         update_cache: true
-      when: ansible_facts['os_family'] == 'Debian'
-    - name: Gather service facts
-      ansible.builtin.service_facts:
-    - name: Start Apache service if not running (Debian/Ubuntu)
+
+    - name: Ensure Apache service is running
       ansible.builtin.service:
-        name: apache2
+        name: "{{ apache_pkg_map.get(ansible_facts['os_family'], 'apache2') }}"
         state: started
         enabled: true
-      when:
-        - "'apache2.service' in ansible_facts.services"
-        - ansible_facts.services['apache2.service'].state != 'running'

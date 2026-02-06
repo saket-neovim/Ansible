@@ -20,7 +20,7 @@ RUN mkdir /var/run/sshd && \
     chown -R ansible:ansible /home/ansible/.ssh
 
 # Add SSH public key to authorized_keys
-COPY id_ansible.pub /home/ansible/.ssh/authorized_keys
+COPY id_ed25519.pub /home/ansible/.ssh/authorized_keys
 RUN chown ansible:ansible /home/ansible/.ssh/authorized_keys && \
     chmod 600 /home/ansible/.ssh/authorized_keys
 
