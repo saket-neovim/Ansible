@@ -4,3 +4,20 @@ Podman/
 DockerBuilds/
 .idea/
 .ansible/
+
+# Local environment and editor artifacts
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Private inventory, credentials and generated controller output
+inventory.local/
+*.retry
+*.local.ini
+.vault-pass*
+vault-password*
+ansibleHomeServer/AnsibleHomeServerTesting/vars/secret.yml
